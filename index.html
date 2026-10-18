@@ -432,6 +432,10 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3Csv
 
 /* divider */
 .divider{border:none;border-top:1px solid var(--border2);margin:1rem 0}
+/* --- ROLE SWITCHER CARDS --- */
+.role-switch-card:hover{border-color:var(--indigo2) !important;background:#fff !important;box-shadow:var(--shadow-sm);transform:translateY(-1px)}
+
+
 </style>
 </head>
 <body>
@@ -474,15 +478,15 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3Csv
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="1.2"/><polyline points="5,10 7,7 9,9 12,5"/></svg>
       Laporan Stok
     </button>
-    <button class="sb-item" onclick="goPage('supplier',this)">
+    <button class="sb-item" id="nav-supplier" onclick="goPage('supplier',this)">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="5" r="2.5"/><path d="M1.5 13c0-2 2-3.5 4.5-3.5s4.5 1.5 4.5 3.5"/><circle cx="12" cy="5" r="2"/><path d="M14.5 13c0-1.7-1.5-3-3-3"/></svg>
       Supplier
     </button>
   </div>
 
-  <div class="sb-section">Sistem</div>
+  <div class="sb-section" id="nav-section-sistem">Sistem</div>
   <div class="sb-nav">
-    <button class="sb-item" onclick="goPage('pengaturan',this)">
+    <button class="sb-item" id="nav-pengaturan" onclick="goPage('pengaturan',this)">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2.5"/><path d="M8 2v1.5M8 12.5V14M14 8h-1.5M3.5 8H2M12.2 3.8l-1.1 1.1M4.9 11.1l-1.1 1.1M12.2 12.2l-1.1-1.1M4.9 4.9L3.8 3.8"/></svg>
       Pengaturan
     </button>
@@ -490,12 +494,12 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3Csv
 
   <div class="sb-footer">
     <div class="sb-user">
-      <div class="sb-avatar">A</div>
+      <div class="sb-avatar" id="user-avatar">A</div>
       <div>
-        <div class="sb-uname">Admin Toko</div>
-        <div class="sb-urole">Administrator</div>
+        <div class="sb-uname" id="user-name">Admin Toko</div>
+        <div class="sb-urole" id="user-role">Administrator</div>
       </div>
-      <button class="sb-logout" title="Keluar">
+      <button class="sb-logout" id="btn-logout" title="Keluar / Ganti Akun" onclick="openLoginModal()">
         <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 8H3M7 5l-3 3 3 3"/><path d="M6 3h7a1 1 0 011 1v8a1 1 0 01-1 1H6"/></svg>
       </button>
     </div>
@@ -521,7 +525,7 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3Csv
         <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2a5 5 0 015 5v2l1.5 2.5H1.5L3 9V7a5 5 0 015-5z"/><path d="M6.5 13a1.5 1.5 0 003 0"/></svg>
         <span class="tb-notif-dot" id="notif-dot"></span>
       </button>
-      <button class="tb-btn tb-btn-primary" onclick="openAddModal()">
+      <button class="tb-btn tb-btn-primary" id="btn-add-prod" onclick="openAddModal()">
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg>
         Tambah Produk
       </button>
@@ -686,7 +690,7 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3Csv
     <!-- ══ PAGE: BARANG KELUAR ══ -->
     <div class="page" id="page-keluar">
       <div class="trans-form-card">
-        <div class="sec-title" style="margin-bottom:1.25rem;font-family:'Playfair Display',serif;font-size:17px">Form Pengeluaran Barang</div>
+        <div class="sec-title" id="keluar-form-title" style="margin-bottom:1.25rem;font-family:'Playfair Display',serif;font-size:17px">Form Pengeluaran Barang</div>
         <div class="form-row">
           <div class="form-grp">
             <label class="form-label">Pilih Produk <span class="req">*</span></label>
@@ -944,6 +948,56 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3Csv
   </div>
 </div>
 
+<!-- Modal: Login / Ganti Peran (Role) -->
+<div class="modal-bg" id="modal-login">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-hdr">
+      <div>
+        <div class="modal-title" style="display:flex;align-items:center;gap:8px">
+          <span>🔐</span> Keluar &amp; Ganti Akun
+        </div>
+        <div style="font-size:12px;color:var(--text3);margin-top:2px">
+          Status saat ini: <strong id="login-current-role" style="color:var(--indigo2)">Administrator</strong>
+        </div>
+      </div>
+      <button class="modal-close" onclick="closeModal('modal-login')">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="4" x2="14" y2="14"/><line x1="14" y1="4" x2="4" y2="14"/></svg>
+      </button>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px;margin:1.25rem 0">
+      <!-- Role Card: Kasir -->
+      <div class="role-switch-card" onclick="setRole('kasir')" style="cursor:pointer;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px;transition:all .15s;background:var(--cream)">
+        <div style="width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg, #10b981, #059669);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">
+          🛒
+        </div>
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:13.5px;color:var(--navy)">Petugas Kasir</div>
+          <div style="font-size:11.5px;color:var(--text2)">Langsung masuk ke kasir penjualan &amp; cek stok</div>
+        </div>
+        <span style="font-size:12px;font-weight:600;color:#059669">Masuk &rarr;</span>
+      </div>
+
+      <!-- Role Card: Admin -->
+      <div class="role-switch-card" onclick="setRole('admin')" style="cursor:pointer;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px;transition:all .15s;background:var(--cream)">
+        <div style="width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg, var(--indigo), var(--indigo2));display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">
+          👑
+        </div>
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:13.5px;color:var(--navy)">Administrator</div>
+          <div style="font-size:11.5px;color:var(--text2)">Akses penuh: kelola produk, supplier, dan laporan</div>
+        </div>
+        <span style="font-size:12px;font-weight:600;color:var(--indigo2)">Masuk &rarr;</span>
+      </div>
+    </div>
+
+    <div class="modal-foot" style="justify-content:space-between">
+      <span style="font-size:11px;color:var(--text3)">Akun default: admin / petugas</span>
+      <button class="btn-sec" onclick="closeModal('modal-login')">Batal</button>
+    </div>
+  </div>
+</div>
+
 <!-- Toast container -->
 <div id="toast"></div>
 
@@ -1001,6 +1055,7 @@ let activeKat = 'semua'; let searchQ = ''; let sortMode = 'nama';
 let editingId = null; let editingSupId = null;
 let stokPage = 1; const PER_PAGE = 8;
 let deleteTargetId = null;
+let currentRole = 'admin'; // 'admin' atau 'kasir'
 
 // settings state
 const settings = {
@@ -1123,8 +1178,10 @@ function renderStok(){
       <td><span class="badge ${st.cls}">${st.label}</span></td>
       <td>
         <button class="act-btn view" onclick="openDetail(${p.id})">Detail</button>
-        <button class="act-btn" onclick="openEditModal(${p.id})">Edit</button>
-        <button class="act-btn del" onclick="confirmDelete(${p.id})">Hapus</button>
+        ${currentRole === 'admin' ? `
+          <button class="act-btn" onclick="openEditModal(${p.id})">Edit</button>
+          <button class="act-btn del" onclick="confirmDelete(${p.id})">Hapus</button>
+        ` : ''}
       </td>
     </tr>`;
   });
@@ -1591,6 +1648,59 @@ function toast(msg,type='success'){
   el.innerHTML=`<span style="font-weight:600;font-size:14px">${icons[type]||'✓'}</span><span style="flex:1">${msg}</span>`;
   const wrap=document.getElementById('toast');wrap.appendChild(el);
   setTimeout(()=>{el.style.animation='toastOut .3s ease forwards';setTimeout(()=>el.remove(),300)},3500);
+}
+
+// ══════════════════════════════════════════
+// ROLE & LOGIN MANAGEMENT
+// ══════════════════════════════════════════
+function setRole(role) {
+  currentRole = role;
+  const avatarEl = document.getElementById('user-avatar');
+  const nameEl = document.getElementById('user-name');
+  const roleEl = document.getElementById('user-role');
+  const addProdBtn = document.getElementById('btn-add-prod');
+  const navSupplier = document.getElementById('nav-supplier');
+  const navPengaturan = document.getElementById('nav-pengaturan');
+  const navSectionSistem = document.getElementById('nav-section-sistem');
+  const keluarTitle = document.getElementById('keluar-form-title');
+
+  if (role === 'kasir') {
+    if (avatarEl) { avatarEl.textContent = 'K'; avatarEl.style.background = 'linear-gradient(135deg, #10b981, #059669)'; }
+    if (nameEl) nameEl.textContent = 'Petugas Kasir';
+    if (roleEl) roleEl.textContent = 'Petugas / Kasir';
+    if (addProdBtn) addProdBtn.style.display = 'none';
+    if (navSupplier) navSupplier.style.display = 'none';
+    if (navPengaturan) navPengaturan.style.display = 'none';
+    if (navSectionSistem) navSectionSistem.style.display = 'none';
+    if (keluarTitle) keluarTitle.innerHTML = '🛒 Kasir — Transaksi Penjualan Barang';
+
+    const btnKeluar = document.querySelector("button[onclick*='keluar']");
+    goPage('keluar', btnKeluar);
+    toast('Berhasil masuk sebagai Petugas Kasir', 'success');
+  } else {
+    if (avatarEl) { avatarEl.textContent = 'A'; avatarEl.style.background = 'linear-gradient(135deg, var(--indigo), var(--indigo2))'; }
+    if (nameEl) nameEl.textContent = 'Admin Toko';
+    if (roleEl) roleEl.textContent = 'Administrator';
+    if (addProdBtn) addProdBtn.style.display = '';
+    if (navSupplier) navSupplier.style.display = '';
+    if (navPengaturan) navPengaturan.style.display = '';
+    if (navSectionSistem) navSectionSistem.style.display = '';
+    if (keluarTitle) keluarTitle.innerHTML = 'Form Pengeluaran Barang';
+
+    const btnStok = document.querySelector("button[onclick*='stok']");
+    goPage('stok', btnStok);
+    toast('Berhasil masuk sebagai Administrator', 'success');
+  }
+  closeModal('modal-login');
+  renderStok();
+}
+
+function openLoginModal() {
+  const currentTxt = document.getElementById('login-current-role');
+  if (currentTxt) {
+    currentTxt.textContent = currentRole === 'admin' ? 'Administrator' : 'Petugas / Kasir';
+  }
+  openModal('modal-login');
 }
 
 // ══════════════════════════════════════════
